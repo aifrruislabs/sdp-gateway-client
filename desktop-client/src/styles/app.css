@@ -1,0 +1,27 @@
+#status_logo {
+	text-align: center;
+}
+
+.center {
+	text-align: center;
+}
+
+.left {
+	text-align: left;
+}
+
+.right {
+	text-align: right;
+}
+
+.row {
+	margin: 0%;
+}
+
+table {
+	width: 100%;
+}
+
+table tr td {
+	padding-top: 15px;
+}

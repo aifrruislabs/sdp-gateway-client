@@ -1,0 +1,30 @@
+{
+	"name": "SDP Desktop Client 1.0",
+	"main": "src/index.html",
+	"window": {
+		"toolbar": false,
+		"icon": "src/pics/logo.png",
+		"width": 420,
+		"height": 600,
+		"resizable": false,
+		"position": "center"
+	},
+	"webkit": {
+		"java": true
+	},
+	"version": "1.0",
+	"Maintainers": [
+		{
+			"name": "Elijah Masanga",
+			"email": "zoelabz@gmail.com"
+		},
+		{
+			"name": "Francis Ruambo",
+			"email": "ruambof@gmail.com"
+		}
+	],
+	"bugs": "mailto:masanga@aifrruislabs.com",
+	"dependencies": {
+		"auto-launch": "^5.0.5"
+	}
+}

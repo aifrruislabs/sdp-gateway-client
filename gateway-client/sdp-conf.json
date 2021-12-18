@@ -1,0 +1,5 @@
+{
+	"controller_ip" : "127.0.0.1:8000",
+
+	"gateway_access_token" : "abc"
+}
