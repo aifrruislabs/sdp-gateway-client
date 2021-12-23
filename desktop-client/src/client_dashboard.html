@@ -137,40 +137,49 @@
 		$("#backgroundActivities").html(`<code>Sending Request to 
 			Update Encryption and Hmac Keys <br/> at : `+datetime+`</code>`);
 
-		axios.post(apiServerUrl + "/api/v1/client/generate/encryption/hmac/keys", {
-				client_public_ip: clientPublicIp
-				},
+		$.get('https://api.ipify.org?format=json', function (data) {
 
-	            { 
-	            headers : {
-	                'Content-Type': 'application/json',
-	                clientId: localStorage.getItem('clientId'),
-	                clientToken: localStorage.getItem('clientToken')
-	            }
+			var jsonData = JSON.parse(JSON.stringify(data));
 
-	        }).then(function (response) {
+			clientPublicIp = jsonData['ip'];
 
-	        	var jsonData = JSON.parse(JSON.stringify(response))
+			axios.post(apiServerUrl + "/api/v1/client/generate/encryption/hmac/keys", {
+					client_public_ip: clientPublicIp
+					},
 
-	        	if (jsonData['status'] == true) {
+		            { 
+		            headers : {
+		                'Content-Type': 'application/json',
+		                clientId: localStorage.getItem('clientId'),
+		                clientToken: localStorage.getItem('clientToken')
+		            }
 
-	        		var encryptionKey = jsonData['encryptionKey']
-	        		var hmacKey = jsonData['hmacKey']
-	        		var spaServer = jsonData['spa_server']
+		        }).then(function (response) {
 
-	        		var fwknoprcData = jsonData['fwknoprcData']
+		        	var jsonData = JSON.parse(JSON.stringify(response))
 
-	        		//Polulate User Local File
-	        		cmd.runSync("rm -rf ~/.fwknoprc && echo " + fwknoprcData + " >> ~/.fwknoprc")
+		        	if (jsonData['status'] == true) {
 
-	        		//Perfom Port Knocking to Gateway
-	        		cmd.runSync("fwkop -n " + spaServer)
+		        		var encryptionKey = jsonData['encryptionKey']
+		        		var hmacKey = jsonData['hmacKey']
+		        		var spaServer = jsonData['spa_server']
 
-	        		$("#backgroundActivities").html(`<code>Encryption Key : `+encryptionKey+` <br/> and Hmac Key : `+hmacKey+` <br/><br/> Updated Successfully on Gateway : `+spaServer+` <br/> at : `+datetime+`</code>`);	
-	        	}
+		        		var fwknoprcData = jsonData['fwknoprcData']
 
-	        })
+		        		//Polulate User Local File
+		        		cmd.runSync("rm -rf ~/.fwknoprc && echo " + fwknoprcData + " >> ~/.fwknoprc")
 
+		        		//Perfom Port Knocking to Gateway
+		        		cmd.runSync("fwkop -n " + spaServer)
+
+		        		$("#backgroundActivities").html(`<code>Encryption Key : `+encryptionKey+` <br/> and Hmac Key : `+hmacKey+` <br/><br/> Updated Successfully on Gateway : `+spaServer+` <br/> at : `+datetime+`</code>`);	
+		        	}
+
+		        })
+
+		});
+
+	
 	}
 
 	//Logout Clear Trust Score
