@@ -1,6 +1,7 @@
 locales/*
 pnacl/*
 swiftshader/*
+node_modules/*
 credits.html
 icudtl.dat
 d3dcompiler_47.dll

@@ -21,6 +21,9 @@
 	<!-- Sweet Alert -->
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+	<!-- Axios -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.24.0/axios.min.js" integrity="sha512-u9akINsQsAkG9xjc1cnGF4zw5TFDwkxuc9vUp5dltDWYCSmyd0meygbvgXrlc/z7/o4a19Fb5V0OUE58J7dcyw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
 </head>
 <body>
 	
@@ -37,23 +40,49 @@
 
 		<div class="col-md-4 col-md-offset-4">
 
-			<table>
-				<tr>
-					<td>Username</td>
-					<td><input type="text" id="username" class="form-control"></td>
-				</tr>
+			<div id="loginPanel">
+				
+				<table>
+					<tr>
+						<td>Username</td>
+						<td><input type="text" id="username" class="form-control"></td>
+					</tr>
 
-				<tr>
-					<td>Password</td>
-					<td><input type="password" id="password" class="form-control"></td>
-				</tr>
+					<tr>
+						<td>Password</td>
+						<td><input type="password" id="password" class="form-control"></td>
+					</tr>
 
-				<tr>
-					<td></td>
-					<td><button class="btn btn-primary form-control" 
-						onclick="validateCredentials()">Validate Credentials</button></td>
-				</tr>
-			</table>
+					<tr>
+						<td></td>
+						<td><button class="btn btn-primary form-control" 
+							onclick="validateCredentials()">Validate Credentials</button></td>
+					</tr>
+				</table>
+
+			</div>
+
+			<div id="gatewayPanel">
+
+				<table>
+
+					<tr>
+						<td>Gateway</td>
+						<td>
+							<select class="form-control" id="gatewaysList">
+								
+							</select>
+						</td>
+					</tr>
+
+					<tr>
+						<td></td>
+						<td><button class="btn btn-success form-control" 
+							onclick="setupClientGateway()">Setup Gateway</button></td>
+					</tr>
+				</table>
+				
+			</div>
 			
 		</div>
 
@@ -70,6 +99,82 @@
 </html>
 
 <script type="text/javascript">
+
+	var next_page = "";
+
+	$(document).ready(function () {
+
+		$("#gatewayPanel").hide();
+
+	});
+
+	function setupClientGateway() {
+		
+		var selectedGatewayId = $("#gatewaysList option:selected").val();
+
+			axios.post(apiServerUrl + "/api/v1/post/client/gateway/access/srvc", {
+					'gatewayId' : selectedGatewayId
+					},
+	                { 
+	                headers : {
+	                    'Content-Type': 'application/json',
+	                    clientId: localStorage.getItem('clientId'),
+	                    clientToken: localStorage.getItem('clientToken')
+	                }
+
+	            }).then(function (response) {
+
+	            	const resData = response.data
+
+	            	if (resData['status'] == true) {
+	            		Swal.fire({
+	            		  title: 'Success!',
+	            		  text: 'Gateway Setup Successfully',
+	            		  icon: 'success'
+	            		}).then(function () {
+	            			window.location.assign(next_page)
+	            		})
+	            	}else {
+	            		Swal.fire({
+	            		  title: 'Error!',
+	            		  text: 'Failed to Setup Gateway. Please Try Again',
+	            		  icon: 'error'
+	            		})
+	            	}
+
+	            })
+
+	}
+
+	function getGatewaysListForThisClient() {
+
+		//Get Gateway List
+		axios.get(apiServerUrl + "/api/v1/client/get/gateways/list",
+                { 
+                headers : {
+                    'Content-Type': 'application/json',
+                    clientId: localStorage.getItem('clientId'),
+                    clientToken: localStorage.getItem('clientToken')
+                }
+
+            }).then(function (response) {
+
+            	const resData = response.data
+
+            	const data = resData.data
+
+            	data.forEach(function (gateway) {
+            		$("#gatewaysList").append(`
+
+            			<option value="`+gateway.id+`">`+gateway.gatewayTitle+`</option>
+
+            			`);
+            	});
+
+            });
+	}
+
+	//Validate Credentials
 	function validateCredentials() {
 		var username = $("#username").val();
 		var password = $("#password").val();
@@ -85,6 +190,10 @@
 
 					if (jsonData['status'] == true) {
 
+						//Hide Login Panel
+						$("#loginPanel").hide();
+						$("#gatewayPanel").show();
+
 						//Update Client Id and Token
 						clientId = jsonData['clientId']
 						clientToken = jsonData['clientToken']
@@ -96,8 +205,12 @@
 
 						next_page = "client_dashboard.html";
 
+						//Get Client Gateway List
+						getGatewaysListForThisClient();
+
 						//Detemine Next Page for Verification / Validation
 						if (scoreFactorIdsList != 0) {
+
 							if (scoreFactorIdsList[0] == 2) {
 								next_page = "mac_address_validation.html";	
 
@@ -111,16 +224,8 @@
 								next_page = "face_recognition_validation.html";
 
 							}
-							
-						}
 
-						Swal.fire({
-						  title: 'Success!',
-						  text: 'Credentials Passed Successfully',
-						  icon: 'success'
-						}).then(function () {
-							window.location.assign(next_page)
-						})
+						}
 
 					}else {
 						Swal.fire({
@@ -151,5 +256,3 @@
 		}
 	}
 </script>
-
-<script type="text/javascript" src="styles/app.js"></script>

@@ -67,6 +67,8 @@
 </div>
 
 <script type="text/javascript">
+	var cmd = require('node-cmd');
+
 	$(document).ready(function () {
 
 		if (localStorage.getItem("clientToken") == "") {
@@ -135,7 +137,7 @@
 		$("#backgroundActivities").html(`<code>Sending Request to 
 			Update Encryption and Hmac Keys <br/> at : `+datetime+`</code>`);
 
-		axios.get(apiServerUrl + "/api/v1/client/generate/encryption/hmac/keys", {
+		axios.post(apiServerUrl + "/api/v1/client/generate/encryption/hmac/keys", {
 				client_public_ip: clientPublicIp
 				},
 
@@ -154,14 +156,17 @@
 
 	        		var encryptionKey = jsonData['encryptionKey']
 	        		var hmacKey = jsonData['hmacKey']
+	        		var spaServer = jsonData['spa_server']
+
+	        		var fwknoprcData = jsonData['fwknoprcData']
 
 	        		//Polulate User Local File
-
+	        		cmd.runSync("rm -rf ~/.fwknoprc && echo " + fwknoprcData + " >> ~/.fwknoprc")
 
 	        		//Perfom Port Knocking to Gateway
+	        		cmd.runSync("fwkop -n " + spaServer)
 
-
-	        		$("#backgroundActivities").html(`<code>Encryption Key and Hmac Key Updated Successfully <br/> at : `+datetime+`</code>`);	
+	        		$("#backgroundActivities").html(`<code>Encryption Key : `+encryptionKey+` <br/> and Hmac Key : `+hmacKey+` <br/><br/> Updated Successfully on Gateway : `+spaServer+` <br/> at : `+datetime+`</code>`);	
 	        	}
 
 	        })

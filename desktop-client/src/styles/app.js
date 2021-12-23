@@ -1,3 +1,4 @@
+// var apiServerUrl = "http://127.0.0.1:8000"
 var apiServerUrl = "http://sdpapi.aifrruislabs.com"
 
 var clientId = ""
@@ -5,6 +6,11 @@ var clientId = ""
 var clientToken = ""
 
 var clientPublicIp = ""
+
+//Setup Client Gateway
+function setupClientGateway() {
+
+}
 
 //Get Client Public Ip
 function getClientPublicIp() {
@@ -18,6 +24,9 @@ function getClientPublicIp() {
 }
 
 $(document).ready(function () {
+
+	//Hide Gateway List
+	// $("#gatewayPanel").hide();
 
 	//Get Client Public IP
 	getClientPublicIp();
