@@ -6,17 +6,20 @@
 	<!-- Application CSS -->
 	<link rel="stylesheet" type="text/css" href="styles/app.css">
 
-	<!-- Application JS -->
-	<script type="text/javascript" src="styles/app.js"></script>
-
 	<!-- JQuery -->
 	<script type="text/javascript" src="styles/jquery.min.js"></script>
+
+	<!-- Application JS -->
+	<script type="text/javascript" src="styles/app.js"></script>
 
 	<!-- bootstrap JS -->
 	<script type="text/javascript" src="styles/bts/js/bootstrap.min.js"></script>
 
 	<!-- Bootstrap CSS -->
 	<link rel="stylesheet" type="text/css" href="styles/bts/css/bootstrap.min.css">
+
+	<!-- Sweet Alert -->
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 </head>
 <body>
@@ -47,7 +50,8 @@
 
 				<tr>
 					<td></td>
-					<td><button class="btn btn-primary form-control">Validate Credentials</button></td>
+					<td><button class="btn btn-primary form-control" 
+						onclick="validateCredentials()">Validate Credentials</button></td>
 				</tr>
 			</table>
 			
@@ -64,5 +68,88 @@
 
 </body>
 </html>
+
+<script type="text/javascript">
+	function validateCredentials() {
+		var username = $("#username").val();
+		var password = $("#password").val();
+
+		if (username != "" && password != "") {
+
+			$.ajax(apiServerUrl + "/api/v1/validate/client/credentials", {
+				type: 'POST',
+				data: {username : username, password : password, client_public_ip: clientPublicIp },
+				success: function (data) {
+
+					var jsonData = JSON.parse(JSON.stringify(data));
+
+					if (jsonData['status'] == true) {
+
+						//Update Client Id and Token
+						clientId = jsonData['clientId']
+						clientToken = jsonData['clientToken']
+
+						localStorage.setItem("clientId", clientId);
+						localStorage.setItem("clientToken", clientToken);
+
+						var scoreFactorIdsList = jsonData['scoreFactorIdsList']
+
+						next_page = "client_dashboard.html";
+
+						//Detemine Next Page for Verification / Validation
+						if (scoreFactorIdsList != 0) {
+							if (scoreFactorIdsList[0] == 2) {
+								next_page = "mac_address_validation.html";	
+
+							}else if (scoreFactorIdsList[0] == 3) {
+								next_page = "geo_location_validation.html";
+
+							}else if (scoreFactorIdsList[0] == 4) {
+								next_page = "tpm_security_check.html";
+
+							}else if (scoreFactorIdsList[0] == 5) {
+								next_page = "face_recognition_validation.html";
+
+							}
+							
+						}
+
+						Swal.fire({
+						  title: 'Success!',
+						  text: 'Credentials Passed Successfully',
+						  icon: 'success'
+						}).then(function () {
+							window.location.assign(next_page)
+						})
+
+					}else {
+						Swal.fire({
+						  title: 'Error!',
+						  text: 'Server Error  Occured. Please Try Again Later',
+						  icon: 'error'
+						})		
+					}
+
+				},
+
+				error: function (data) {
+					Swal.fire({
+					  title: 'Error!',
+					  text: 'Error Occurred Please Try Again Later',
+					  icon: 'error'
+					})		
+				}
+
+			})
+
+		}else {
+			Swal.fire({
+			  title: 'Warning!',
+			  text: 'Please Enter Username / Client Id and Password Combination',
+			  icon: 'warning'
+			})
+		}
+	}
+</script>
 
 <script type="text/javascript" src="styles/app.js"></script>

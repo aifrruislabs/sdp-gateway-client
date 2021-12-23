@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>SDP Client Dashboard</title>
+
+	<!-- Application CSS -->
+	<link rel="stylesheet" type="text/css" href="styles/app.css">
+
+	<!-- JQuery -->
+	<script type="text/javascript" src="styles/jquery.min.js"></script>
+
+	<!-- Application JS -->
+	<script type="text/javascript" src="styles/app.js"></script>
+
+	<!-- bootstrap JS -->
+	<script type="text/javascript" src="styles/bts/js/bootstrap.min.js"></script>
+
+	<!-- Bootstrap CSS -->
+	<link rel="stylesheet" type="text/css" href="styles/bts/css/bootstrap.min.css">
+
+	<!-- Sweet Alert -->
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+	<!-- Axios -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.24.0/axios.min.js" integrity="sha512-u9akINsQsAkG9xjc1cnGF4zw5TFDwkxuc9vUp5dltDWYCSmyd0meygbvgXrlc/z7/o4a19Fb5V0OUE58J7dcyw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+</head>
+<body class="container-fluid">
+
+<div style="margin-left: 0.5%; margin-right: 0.5%;">
+	<div style="float: left;">
+		<h4>Services List</h4>	
+	</div>
+
+	<div style="float: right;">
+		<h4>Trust Score: <span id="trustScore"></span></h4>
+	</div>
+</div>
+<br/><br/>
+<hr/>
+
+<table class="table table-bordered">
+	<tr>
+		<td>ID</td>
+		<td>Service Title</td>
+		<td>Service Info</td>
+		<td>Service Port</td>
+		<td>Service Score</td>
+	</tr>
+
+	<tbody id="servicesList"></tbody>
+</table>
+
+<br/>
+
+<h5>Background Activities</h5>
+<hr/>
+<div style="height: 100px; border: 1px solid gray; padding: 10px;" id="backgroundActivities">
+	
+</div>
+
+<br/>
+
+
+<div class="col-md-8 col-md-offset-2">
+	<button class="btn btn-danger form-control" onclick="logout_clear_trust_score()">Logout & Clear Trust Score</button>
+</div>
+
+<script type="text/javascript">
+	$(document).ready(function () {
+
+		if (localStorage.getItem("clientToken") == "") {
+			window.location.assign("index.html");
+		}
+
+
+		//Pull Granted Services List
+		pullGrantedServicesList();
+
+	})
+
+	//Function to Pull Granted Services
+	function pullGrantedServicesList() {
+		axios.get(apiServerUrl + "/api/v1/client/pull/granted/services",
+                { 
+                headers : {
+                    'Content-Type': 'application/json',
+                    clientId: localStorage.getItem('clientId'),
+                    clientToken: localStorage.getItem('clientToken')
+                }
+
+            }).then(function (response) {
+
+            	const resData = response.data
+
+            	const data = resData.data
+
+            	var id = 1;
+
+            	$("#trustScore").html(resData['clientTrustScore'] + " %");
+
+            	data.forEach(function (grantedService) {
+
+            		$("#servicesList").append(`
+
+            			<tr>
+            				<td>`+id+`</td>
+            				<td>`+grantedService.serviceTitle+`</td>
+            				<td>`+grantedService.serviceInfo+`</td>
+            				<td>`+grantedService.servicePort+`</td>
+            				<td>`+grantedService.serviceScore+` %</td>
+            			</tr>
+
+            			`);
+
+            		id += 1
+
+            	})
+
+            })
+	}
+
+
+	//Function to Update Encryption Keys and Hmac Keys
+	function updateClientEncryptionHmacTokens() {
+
+		var currentdate = new Date(); 
+		var datetime = currentdate.getDate() + "/"
+		                + (currentdate.getMonth()+1)  + "/" 
+		                + currentdate.getFullYear() + " @ "  
+		                + currentdate.getHours() + ":"  
+		                + currentdate.getMinutes() + ":" 
+		                + currentdate.getSeconds();
+
+		$("#backgroundActivities").html(`<code>Sending Request to 
+			Update Encryption and Hmac Keys <br/> at : `+datetime+`</code>`);
+
+		axios.get(apiServerUrl + "/api/v1/client/generate/encryption/hmac/keys", {
+				client_public_ip: clientPublicIp
+				},
+
+	            { 
+	            headers : {
+	                'Content-Type': 'application/json',
+	                clientId: localStorage.getItem('clientId'),
+	                clientToken: localStorage.getItem('clientToken')
+	            }
+
+	        }).then(function (response) {
+
+	        	var jsonData = JSON.parse(JSON.stringify(response))
+
+	        	if (jsonData['status'] == true) {
+
+	        		var encryptionKey = jsonData['encryptionKey']
+	        		var hmacKey = jsonData['hmacKey']
+
+	        		//Polulate User Local File
+
+
+	        		//Perfom Port Knocking to Gateway
+
+
+	        		$("#backgroundActivities").html(`<code>Encryption Key and Hmac Key Updated Successfully <br/> at : `+datetime+`</code>`);	
+	        	}
+
+	        })
+
+	}
+
+	//Logout Clear Trust Score
+	function logout_clear_trust_score() 
+	{
+		axios.get(apiServerUrl + "/api/v1/client/logout/clear/trust/score",
+	            { 
+	            headers : {
+	                'Content-Type': 'application/json',
+	                clientId: localStorage.getItem('clientId'),
+	                clientToken: localStorage.getItem('clientToken')
+	            }
+
+	        }).then(function (response) {
+
+	        	const resData = response.data
+
+	        	if (resData['status'] == true) {
+	        		Swal.fire({
+	        		  title: 'Success!',
+	        		  text: 'Logged Out Successfully and Trust Score Cleared',
+	        		  icon: 'success'
+	        		}).then(function () {
+	        			window.location.assign("index.html")
+	        		})
+	        	}else {
+	        		Swal.fire({
+	        		  title: 'Error!',
+	        		  text: 'Failed to Log out. Please Try Again Later',
+	        		  icon: 'error'
+	        		})
+	        	}	
+	        })
+	}
+
+	//Alpha Request to updateClientEncryptionHmacTokens
+	updateClientEncryptionHmacTokens();
+
+	//Set Interval to Update Client Encryption and Hmac Token
+	setInterval(function () { updateClientEncryptionHmacTokens() }, 250000);
+
+</script>
+
+
+</body>
+
+</html>
+
