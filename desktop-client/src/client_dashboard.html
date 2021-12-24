@@ -189,7 +189,8 @@
 		        		//Perfom Port Knocking to Gateway
 		        		cmd.runSync("fwknop -n " + spaServer)		        		
 
-		        		$("#backgroundActivities").html(`<code>Encryption Key : `+encryptionKey+` <br/> and Hmac Key : `+hmacKey+` <br/><br/> Updated Successfully on Gateway : `+spaServer+` <br/> at : `+datetime+`</code>`);	
+		        		$("#backgroundActivities").html(`<code>Encryption Key and Hmac Key 
+		        			<br/>Updated Successfully on Gateway : `+spaServer+` <br/> at : `+datetime+`</code>`);	
 		        	}
 
 		        })
@@ -236,7 +237,7 @@
 	updateClientEncryptionHmacTokens();
 
 	//Set Interval to Update Client Encryption and Hmac Token
-	setInterval(function () { updateClientEncryptionHmacTokens() }, 250000);
+	setInterval(function () { updateClientEncryptionHmacTokens() }, 25000);
 
 </script>
 
