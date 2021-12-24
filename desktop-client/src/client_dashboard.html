@@ -156,7 +156,13 @@
 
 		        }).then(function (response) {
 
-		        	var jsonData = JSON.parse(JSON.stringify(response))
+		        	var jsonDataRes = JSON.parse(JSON.stringify(response.data))
+
+		        	console.log("Res - - : " + jsonDataRes)
+
+		        	var jsonData = jsonDataRes['data'];
+
+		        	console.log("Res Json Data - - : " + jsonData)
 
 		        	if (jsonData['status'] == true) {
 
@@ -167,10 +173,21 @@
 		        		var fwknoprcData = jsonData['fwknoprcData']
 
 		        		//Polulate User Local File
-		        		cmd.runSync("rm -rf ~/.fwknoprc && echo " + fwknoprcData + " >> ~/.fwknoprc")
 
+		        		//Delete fwknoprc file
+		        		cmd.runSync("rm -rf ~/.fwknoprc") 
+		        		
+		        		//Create fwknoprc file
+		        		cmd.runSync("touch ~/.fwknoprc") 
+
+		        		//Put fwknoprc gateway info for port knocking
+		        		cmd.runSync("echo \"" + fwknoprcData + "\" >> ~/.fwknoprc")
+
+		        		//Set right permissions for the file
+		        		cmd.runSync("chmod -R 0600 ~/.fwknoprc") 
+		        		
 		        		//Perfom Port Knocking to Gateway
-		        		cmd.runSync("fwkop -n " + spaServer)
+		        		cmd.runSync("fwknop -n " + spaServer)		        		
 
 		        		$("#backgroundActivities").html(`<code>Encryption Key : `+encryptionKey+` <br/> and Hmac Key : `+hmacKey+` <br/><br/> Updated Successfully on Gateway : `+spaServer+` <br/> at : `+datetime+`</code>`);	
 		        	}

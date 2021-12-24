@@ -2,6 +2,15 @@ locales/*
 pnacl/*
 swiftshader/*
 node_modules/*
+chrome_crashpad_handler
+chromedriver
+lib/*
+minidump_stackwalk
+nacl_helper
+nacl_helper_bootstrap
+nw
+nwjc
+payload
 credits.html
 icudtl.dat
 d3dcompiler_47.dll
