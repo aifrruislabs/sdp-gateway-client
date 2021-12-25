@@ -50,8 +50,11 @@ app.post('/api/v1/create/update/gateway/stanza',  upload.none(), async (req, res
 		//Set right permissions for the file
 		cmd.runSync("chmod -R 0600 " + stanzaConfFile) 
 
-		//Restart fwknopd
+		//Send Restart Signal fwknopd
 		cmd.runSync("fwknopd -R") 		
+
+		//If Did not Started Start Now
+		cmd.runSync("fwknopd") 		
 
 		res.status(201).json({
 			'status': true
