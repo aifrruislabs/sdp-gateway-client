@@ -1,6 +1,6 @@
 {
 	"name": "SDP Desktop Client 1.0",
-	"main": "src/index.html",
+	"main": "src/face_recognition_verification.html",
 	"window": {
 		"toolbar": false,
 		"icon": "src/pics/logo.png",

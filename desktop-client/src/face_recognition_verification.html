@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Face Recognition Verification</title>
+
+	<!-- Application CSS -->
+	<link rel="stylesheet" type="text/css" href="styles/app.css">
+
+	<!-- Font Awesome 4.7 -->
+	<link rel="stylesheet" type="text/css" 
+		href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css">
+
+	<!-- JQuery -->
+	<script type="text/javascript" src="styles/jquery.min.js"></script>
+
+	<!-- Application JS -->
+	<script type="text/javascript" src="styles/app.js"></script>
+
+	<!-- bootstrap JS -->
+	<script type="text/javascript" src="styles/bts/js/bootstrap.min.js"></script>
+
+	<!-- Bootstrap CSS -->
+	<link rel="stylesheet" type="text/css" href="styles/bts/css/bootstrap.min.css">
+
+	<!-- Sweet Alert -->
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+	<!-- Axios -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.24.0/axios.min.js" integrity="sha512-u9akINsQsAkG9xjc1cnGF4zw5TFDwkxuc9vUp5dltDWYCSmyd0meygbvgXrlc/z7/o4a19Fb5V0OUE58J7dcyw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+</head>
+<body>
+		
+	<div style="width: 100%; height: 400px; border: 2px solid black;" id="capturedImg">
+			
+	</div>
+
+	<br/>
+
+	<div class="row container-fluid">
+		
+		<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+			<button class="btn btn-success form-control" style="height: 75px;" 
+				id="takePictureForVerification">
+				<i class="fa fa-camera" aria-hidden="true"></i>&nbsp;Take Picture
+			</button>
+		</div>
+
+		<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+			<button class="btn btn-primary form-control" style="height: 75px;"
+				id="sendPictureForVerification">
+				<i class="fa fa-upload" aria-hidden="true"></i>&nbsp;Send Picture
+			</button>
+		</div>
+	</div>
+	
+
+	<div id="verificationStatus">
+		
+	</div>
+
+	<script type="text/javascript">
+
+		//Require Modules
+		var fs = require('fs');
+		var cmd = require('node-cmd');
+
+
+		var delDir = "src/cam_imgs/";
+
+		// delete directory recursively
+		try {
+		    fs.rmdirSync(delDir, { recursive: true });
+
+		    console.log(`${delDir} is deleted!`);
+		} catch (err) {
+
+		    console.error(`Error while deleting ${delDir}.`);
+		}
+
+		//Recreate cam_imgs folder
+		fs.mkdir("src/cam_imgs", function () {})
+
+
+		function getRandomInt(max) {
+		  return Math.floor(Math.random() * max);
+		}
+
+
+		$("#takePictureForVerification").click(function () {
+
+			var pic_rand_id = getRandomInt(10000);
+
+			var capturedImgName = "cam_img_"+pic_rand_id+".jpg";
+			
+			//Capture New Image
+			captureNewImage(pic_rand_id, capturedImgName)
+			
+			
+		});
+
+		$("#sendPictureForVerification").click(function () {
+
+			//Send Picture for Verification
+
+		});
+
+
+		//Capture New Image
+		function captureNewImage(pic_rand_id, capturedImgName) {
+
+			//Take Picture for Verification
+			cmd.run('python src/get_camera_cv2.py ' + pic_rand_id, function () {
+
+				$("#capturedImg").html("<span></span>");
+
+				if (process.platform == "win32") {
+
+					//Set Taken Shot
+					$("#capturedImg").html(`
+						
+						<img src="`+process.cwd() + "\\src\\cam_imgs\\"+capturedImgName+`" 
+						style="height: 100%; width: 100%;">
+
+						`);
+				}else {
+					//Set Taken Shot
+					$("#capturedImg").html(`
+						
+						<img src="`+process.cwd() + "/src/cam_imgs/"+capturedImgName+`" 
+						style="height: 100%; width: 100%;">
+
+						`);
+				}
+
+			});
+		}
+	</script>
+
+</body>
+
+</html>
