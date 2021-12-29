@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Mac Address Verification</title>
+
+	<!-- Application CSS -->
+	<link rel="stylesheet" type="text/css" href="styles/app.css">
+
+	<!-- Font Awesome 4.7 -->
+	<link rel="stylesheet" type="text/css" 
+		href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css">
+
+	<!-- JQuery -->
+	<script type="text/javascript" src="styles/jquery.min.js"></script>
+
+	<!-- Application JS -->
+	<script type="text/javascript" src="styles/app.js"></script>
+
+	<!-- bootstrap JS -->
+	<script type="text/javascript" src="styles/bts/js/bootstrap.min.js"></script>
+
+	<!-- Bootstrap CSS -->
+	<link rel="stylesheet" type="text/css" href="styles/bts/css/bootstrap.min.css">
+
+	<!-- Sweet Alert -->
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+	<!-- Axios -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.24.0/axios.min.js" integrity="sha512-u9akINsQsAkG9xjc1cnGF4zw5TFDwkxuc9vUp5dltDWYCSmyd0meygbvgXrlc/z7/o4a19Fb5V0OUE58J7dcyw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+</head>
+<body class="container">
+	
+	<div id="status_logo">
+		<div style="margin-top: 2.5%;">
+			<img src="pics/mac_address.jpg" style="height: 150px;">	
+		</div>
+
+		<h3>Mac Address Verification</h3>
+
+		<br/>
+		<strong>This Computer Mac Address</strong>
+		<hr/>
+		<input type="text" disabled="true" id="computerMacAddr" class="form-control">
+
+		<br/><br/>
+		<div class="row">
+			<div class="col-md-6 col-sm-6 col-xs-6">
+				<button class="btn btn-success form-control">Verify Mac Address</button>
+			</div>
+
+			<div class="col-md-6 col-sm-6 col-xs-6">
+				<button class="btn btn-primary form-control">Continue</button>
+			</div>
+		</div>
+
+	</div>
+
+
+	<script type="text/javascript">
+		var macAddr = require('node-getmac');
+
+		$(document).ready(function() {
+
+			$("#computerMacAddr").val(macAddr)
+
+		})
+	</script>
+
+</body>
+
+</html>

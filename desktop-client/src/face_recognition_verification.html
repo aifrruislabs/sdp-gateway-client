@@ -101,9 +101,72 @@
 
 		$("#sendPictureForVerification").click(function () {
 
-			//Send Picture for Verification
+			if (process.platform == "win32") {
+
+				if (fs.existsSync(process.cwd() + "\\src\\cam_imgs\\"+capturedImgName)) {
+				  //Upload New Image
+				  uploadNewImage(process.cwd() + "\\src\\cam_imgs\\"+capturedImgName)
+				}else {
+					Swal.fire(
+					  'Error',
+					  'Please Take Your Photo First',
+					  'error'
+					)
+				}
+
+			}else {
+				
+				if (fs.existsSync(process.cwd() + "/src/cam_imgs/"+capturedImgName)) {
+				  //Upload New Image
+				  uploadNewImage(process.cwd() + "/src/cam_imgs/"+capturedImgName)
+				}else {
+					Swal.fire(
+					  'Error',
+					  'Please Take Your Photo First',
+					  'error'
+					)
+				}
+
+			}
+			
 
 		});
+
+		function uploadNewImage(capturedImg) {
+
+			let formData = new FormData();
+			formData.append("client_unknown_face", fs.createReadStream(capturedImg));
+
+			axios.post(apiServerUrl + "/api/v1/client/face/recognition/verification", formData,
+	                { 
+	                headers : {
+	                    'content-type': 'multipart/form-data'
+	                    clientId: localStorage.getItem('clientId'),
+	                    clientToken: localStorage.getItem('clientToken')
+	                }
+
+	            }).then(function (response) {
+
+	            	const resData = response.data
+
+	            	if (resData['status'] == true) {
+	            		Swal.fire({
+	            		  title: 'Success!',
+	            		  text: 'Face Accepted',
+	            		  icon: 'success'
+	            		}).then(function () {
+	            			// window.location.assign(next_page)
+	            		})
+	            	}else {
+	            		Swal.fire({
+	            		  title: 'Error!',
+	            		  text: 'Face Rejected. Please Take Another Shot',
+	            		  icon: 'error'
+	            		})
+	            	}
+
+	            })
+		}
 
 
 		//Capture New Image
@@ -119,7 +182,7 @@
 					//Set Taken Shot
 					$("#capturedImg").html(`
 						
-						<img src="`+process.cwd() + "\\src\\cam_imgs\\"+capturedImgName+`" 
+						<img src="`+ process.cwd() + "\\src\\cam_imgs\\"+capturedImgName+`" 
 						style="height: 100%; width: 100%;">
 
 						`);
