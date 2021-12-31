@@ -73,14 +73,27 @@
 
 
 	<script type="text/javascript">
-		var geolocate = require('node-geolocate');
-		geolocate(function(latLong){
-		   var latitude = latLong[0];
-		   var longitude = latLong[1];
+		var geoIP = require('offline-geo-from-ip');
+		var latitude = ""
+		var longitude = ""
 
-		   $("#computerLatitude").val(latitude);
-		   $("#computerLongitude").val(longitude);
-		});
+		$.get('https://api.ipify.org?format=json', function (data) {
+
+			var jsonData = JSON.parse(JSON.stringify(data))
+
+			var ip = jsonData['ip']
+
+			var geoData = geoIP.allData(ip)
+
+			var location = geoData['location']
+
+			latitude = location['latitude']
+			longitude = location['longitude']
+
+			$("#computerLatitude").val(latitude);
+			$("#computerLongitude").val(longitude);
+
+		})
 
 	</script>
 

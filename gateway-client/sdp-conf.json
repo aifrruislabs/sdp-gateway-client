@@ -1,11 +1,13 @@
-{
-	"controller_ip" : "127.0.0.1:8000",
+{ 
 
-	"gateway_id": "12",
+	"controller_uri": "http://sdpapi.aifrruislabs.com", 
 
-	"gateway_user_id": "1",
+	"gatewayId": "1", 
 
-	"gateway_iface": "enp0s3",
+	"gateway_user_id": "2", 
 
-	"gateway_access_token" : "abc"
+	"gateway_iface": "eth0", 
+
+	"gateway_access_token": "5da308e050f84941e033c82df536fea69b2273f9" 
+
 }

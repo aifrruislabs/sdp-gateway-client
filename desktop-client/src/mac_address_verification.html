@@ -46,11 +46,11 @@
 		<br/><br/>
 		<div class="row">
 			<div class="col-md-6 col-sm-6 col-xs-6">
-				<button class="btn btn-success form-control">Verify Mac Address</button>
+				<button class="btn btn-success form-control" id="verifyMacAddressBtn">Verify Mac Address</button>
 			</div>
 
 			<div class="col-md-6 col-sm-6 col-xs-6">
-				<button class="btn btn-primary form-control">Continue</button>
+				<button class="btn btn-primary form-control" id="continueBtn">Continue</button>
 			</div>
 		</div>
 
@@ -65,6 +65,43 @@
 			$("#computerMacAddr").val(macAddr)
 
 		})
+
+		//Verify Mac Address
+		$("#verifyMacAddressBtn").click(function () {
+
+			axios.post(apiServerUrl + "/api/v1/validate/client/mac/address",{
+				
+				'macAddr': macAddr
+
+				}, { 
+	                headers : {
+	                    'Content-Type': 'application/json',
+	                    clientId: localStorage.getItem('clientId'),
+	                    clientToken: localStorage.getItem('clientToken')
+	                }
+
+	            }).then(function (response) {
+
+	            	const resData = response.data
+
+	            	const jsonData = JSON.parse(JSON.stringify(resData))
+
+	            	if (jsonData['status'] == true) {
+
+	            	}else {
+
+	            	}
+
+				});
+
+
+		});
+
+		//Continue Button
+		$("#continueBtn").click(function () {
+
+		});
+
 	</script>
 
 </body>

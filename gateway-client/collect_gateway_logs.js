@@ -3,20 +3,18 @@ const axios = require('axios')
 var netStat = require('net-stat')
 var cpuStat = require('cpu-stat')
 
-
 //Pull Configuration Data
 const rawData = fs.readFileSync('sdp-conf.json')
 const jsonData = JSON.parse(rawData);
 
-const controller_ip = jsonData['controller_ip']
-const controller_port = jsonData['controller_port']
+const controller_uri = jsonData['controller_uri']
 
 const gateway_iface = jsonData['gateway_iface']
 const gateway_id = jsonData['gateway_id']
 const gateway_user_id = jsonData['gateway_user_id']
 const gateway_access_token = jsonData['gateway_access_token']
 
-const serverUri = "http://" + controller_ip + ":" + controller_port + "/api/v1"
+const serverUri = controller_uri + "/api/v1"
 
 var netRx = ""
 var netTx = ""
@@ -65,20 +63,26 @@ setInterval(function () {
 
     console.log("Traffic RX : " + netRx + " Traffic TX : " + netTx + " CPU Percent : " + cpuPercent)
 
-    axios.post(serverUri + "/post/gateway/network/traffic/tx", {
+    try {
+      
+      axios.post(serverUri + "/post/gateway/network/traffic/tx", {
 
-             'trafficRx': netRx,
-             'trafficTx': netTx,
-             'cpuPercent': cpuPercent
+               'trafficRx': netRx,
+               'trafficTx': netTx,
+               'cpuPercent': cpuPercent
 
-             }, { 
-                 headers : {
-                     'Content-Type': 'application/json',
-                     'userId': gateway_user_id,
-                     'gatewayId': gateway_id,
-                     'accessToken': gateway_access_token
-                }
+               }, { 
+                   headers : {
+                       'Content-Type': 'application/json',
+                       'userId': gateway_user_id,
+                       'gatewayId': gateway_id,
+                       'accessToken': gateway_access_token
+                  }
 
-            })
+              })
+
+    }catch(error) {
+      console.log(error)
+    } 
     
 }, 2000)
