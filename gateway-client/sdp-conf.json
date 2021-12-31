@@ -5,5 +5,7 @@
 
 	"gateway_user_id": "1",
 
+	"gateway_iface": "enp0s3",
+
 	"gateway_access_token" : "abc"
 }
