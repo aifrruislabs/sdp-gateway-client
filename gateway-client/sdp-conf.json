@@ -1,5 +1,9 @@
 {
 	"controller_ip" : "127.0.0.1:8000",
 
+	"gateway_id": "12",
+
+	"gateway_user_id": "1",
+
 	"gateway_access_token" : "abc"
 }

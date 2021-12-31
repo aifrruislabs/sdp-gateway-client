@@ -10,7 +10,7 @@ const cmd = require("node-cmd")
 
 const port = 8000
 
-const fs = require('fs');
+const fs = require('fs')
 
 //JSON Middleware
 app.use(express.json())
@@ -22,7 +22,7 @@ app.use(cors())
 app.use(morgan('combined'))
 
 //Pull Configuration Data
-const rawData = fs.readFileSync('sdp-conf.json');
+const rawData = fs.readFileSync('sdp-conf.json')
 const jsonData = JSON.parse(rawData);
 
 const controller_ip = jsonData['controller_ip']
