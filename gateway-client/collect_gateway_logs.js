@@ -61,7 +61,7 @@ setInterval(function () {
 //Send Stats to Controller
 setInterval(function () {
 
-    cons ole.log("Traffic RX : " + netRx + " Traffic TX : " + netTx + " CPU Percent : " + cpuPercent)
+    console.log("Traffic RX : " + netRx + " Traffic TX : " + netTx + " CPU Percent : " + cpuPercent)
 
     try {
       
@@ -76,7 +76,7 @@ setInterval(function () {
                        'Content-Type': 'application/json',
                        'userId': gateway_user_id,
                        'gatewayId': gateway_id,
-                       'gatewayAccessToken': gateway_access_token
+                       'accessToken': gateway_access_token
                   }
 
               })
