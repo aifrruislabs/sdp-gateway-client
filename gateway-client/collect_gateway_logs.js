@@ -28,7 +28,7 @@ setInterval(function() {
       units: 'MiB',
       sampleMs: 1000,
     }, function(mbps) {
-        netRx = mbps
+        netTx = mbps
     }, 1000)
 
 })
@@ -42,7 +42,7 @@ setInterval(function() {
     units: 'MiB',
     sampleMs: 1000,
   }, function(mbps) {
-    netTx = mbps
+    netRx = mbps
   });
 
 }, 1000)
@@ -61,7 +61,7 @@ setInterval(function () {
 //Send Stats to Controller
 setInterval(function () {
 
-    console.log("Traffic RX : " + netRx + " Traffic TX : " + netTx + " CPU Percent : " + cpuPercent)
+    cons ole.log("Traffic RX : " + netRx + " Traffic TX : " + netTx + " CPU Percent : " + cpuPercent)
 
     try {
       
@@ -76,7 +76,7 @@ setInterval(function () {
                        'Content-Type': 'application/json',
                        'userId': gateway_user_id,
                        'gatewayId': gateway_id,
-                       'accessToken': gateway_access_token
+                       'gatewayAccessToken': gateway_access_token
                   }
 
               })
