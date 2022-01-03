@@ -52,8 +52,14 @@
 				<i class="fa fa-upload" aria-hidden="true"></i>&nbsp;Send Picture
 			</button>
 		</div>
+
+
+		<div class="col-lg-6 col-lg-offset-3 col-md-6 col-md-offset-3 col-sm-6 col-sm-offset-3 col-xs-6 col-xs-offset-3">
+			<br/>
+			<button class="btn btn-primary form-control" onclick="continueBtnNext()">Continue</button>
+		</div>	
+
 	</div>
-	
 
 	<div id="verificationStatus">
 		
@@ -139,7 +145,7 @@
 			axios.post(apiServerUrl + "/api/v1/client/face/recognition/verification", formData,
 	                { 
 	                headers : {
-	                    'content-type': 'multipart/form-data'
+	                    'content-type': 'multipart/form-data',
 	                    clientId: localStorage.getItem('clientId'),
 	                    clientToken: localStorage.getItem('clientToken')
 	                }

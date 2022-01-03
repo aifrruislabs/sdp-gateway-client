@@ -33,7 +33,7 @@
 	
 	<div id="status_logo">
 		<div style="margin-top: 2.5%;">
-			<img src="pics/geo_location.png" style="height: 150px;">	
+			<img src="pics/geo_location.png" style="height: 100px;">	
 		</div>
 
 		<h3>Geo Location Verification</h3>
@@ -57,15 +57,20 @@
 			</tr>
 		</table>
 		
+		<hr/>
+		<div class="well">
+			<div id="location_summary"></div>
+		</div>
+
 
 		<br/><br/>
 		<div class="row">
 			<div class="col-md-6 col-sm-6 col-xs-6">
-				<button class="btn btn-success form-control">Verify Geo Location</button>
+				<button class="btn btn-success form-control" id="verifyGeoLocationButton">Verify Geo Location</button>
 			</div>
 
 			<div class="col-md-6 col-sm-6 col-xs-6">
-				<button class="btn btn-primary form-control">Continue</button>
+				<button class="btn btn-primary form-control" onclick="continueBtnNext()">Continue</button>
 			</div>
 		</div>
 
@@ -85,6 +90,15 @@
 
 			var geoData = geoIP.allData(ip)
 
+
+			var continent = geoData['continent']
+			var country = geoData['country']
+			var state = geoData['state']
+			var city = geoData['city']
+
+			$("#location_summary").html(`<strong>Continent :</strong> ` + continent + ` <strong>Country :</strong> `
+				 + country +` <strong>State :</strong> ` + state + ` <strong>City :</strong> ` + city)
+
 			var location = geoData['location']
 
 			latitude = location['latitude']
@@ -92,6 +106,55 @@
 
 			$("#computerLatitude").val(latitude);
 			$("#computerLongitude").val(longitude);
+
+		})
+
+		$("#verifyGeoLocationButton").click(function () {
+
+			axios.post(apiServerUrl + "/api/v1/validate/client/geo/location",{
+				
+				'latitude': latitude,
+				'longitude': longitude
+
+				}, { 
+	                headers : {
+	                    'Content-Type': 'application/json',
+	                    clientId: localStorage.getItem('clientId'),
+	                    clientToken: localStorage.getItem('clientToken')
+	                }
+
+	            }).then(function (response) {
+
+	            	const resData = response.data
+
+	            	const jsonData = JSON.parse(JSON.stringify(resData))
+
+	            	if (jsonData['status'] == true) {
+
+	            		var scoreFactorIdsList = jsonData['scoreFactorIdsList']
+
+	            		var kmDiff = jsonData['kmDiff']
+
+	            		//Next Page
+	            		var next_page = getGoNextPage(scoreFactorIdsList)
+
+            			Swal.fire({
+            			  title: 'Success!',
+            			  text: 'Geo Location is in ' + kmDiff + ' Km  Radius',
+            			  icon: 'success'
+            			}).then(function () {
+            				window.location.assign(next_page)
+            			})
+            		
+	            	}else {
+	            		Swal.fire({
+	            		  title: 'Error!',
+	            		  text: 'Geo Location not in Radius',
+	            		  icon: 'error'
+	            		})
+	            	}
+
+				});
 
 		})
 

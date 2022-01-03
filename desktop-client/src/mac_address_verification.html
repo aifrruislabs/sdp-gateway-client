@@ -50,7 +50,7 @@
 			</div>
 
 			<div class="col-md-6 col-sm-6 col-xs-6">
-				<button class="btn btn-primary form-control" id="continueBtn">Continue</button>
+				<button class="btn btn-primary form-control" onclick="continueBtnNext()">Continue</button>
 			</div>
 		</div>
 
@@ -88,17 +88,29 @@
 
 	            	if (jsonData['status'] == true) {
 
-	            	}else {
+	            		var scoreFactorIdsList = jsonData['scoreFactorIdsList']
 
+	            		//Next Page
+	            		var next_page = getGoNextPage(scoreFactorIdsList)
+
+            			Swal.fire({
+            			  title: 'Success!',
+            			  text: 'Mac Address Passed Successfully',
+            			  icon: 'success'
+            			}).then(function () {
+            				window.location.assign(next_page)
+            			})
+            		
+	            	}else {
+	            		Swal.fire({
+	            		  title: 'Error!',
+	            		  text: 'Mac Address Verification Failed',
+	            		  icon: 'error'
+	            		})
 	            	}
 
 				});
 
-
-		});
-
-		//Continue Button
-		$("#continueBtn").click(function () {
 
 		});
 
