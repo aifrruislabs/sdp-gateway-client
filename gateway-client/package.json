@@ -4,12 +4,14 @@
   "description": "Gateway Client Application written in Node JS",
   "main": "app.js",
   "scripts": {
+    "start": "concurrently \"nodemon app.js\" \"node collect_gateway_logs.js\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Elijah Masanga, Francis Ruambo",
   "license": "ISC",
   "dependencies": {
     "axios": "^0.24.0",
+    "concurrently": "^7.0.0",
     "cors": "^2.8.5",
     "cpu-stat": "^2.0.1",
     "express": "^4.17.2",

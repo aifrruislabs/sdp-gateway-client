@@ -1,6 +1,8 @@
 { 
 
-	"controller_uri": "http://sdpapi.aifrruislabs.com", 
+	"controller_uri": "https://sdpapi.aifrruislabs.com", 
+
+	"controller_ip": "178.62.76.239",
 
 	"gatewayId": "1", 
 
