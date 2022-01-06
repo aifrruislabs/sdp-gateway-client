@@ -5,6 +5,7 @@ node_modules/*
 chrome_crashpad_handler
 chromedriver
 lib/*
+src/data_face_rec_data.json
 minidump_stackwalk
 nacl_helper
 nacl_helper_bootstrap

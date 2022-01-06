@@ -25,9 +25,6 @@
 	<!-- Sweet Alert -->
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-	<!-- Axios -->
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.24.0/axios.min.js" integrity="sha512-u9akINsQsAkG9xjc1cnGF4zw5TFDwkxuc9vUp5dltDWYCSmyd0meygbvgXrlc/z7/o4a19Fb5V0OUE58J7dcyw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-
 </head>
 <body>
 		
@@ -68,9 +65,12 @@
 	<script type="text/javascript">
 
 		//Require Modules
-		var fs = require('fs');
-		var cmd = require('node-cmd');
+		var fs = require('fs')
+		var axios = require('axios')
+		var cmd = require('node-cmd')
+		const FormData = require('form-data')
 
+		var capturedImgName = "";
 		var delDir = "src/cam_imgs/";
 
 		// delete directory recursively
@@ -96,7 +96,7 @@
 
 			var pic_rand_id = getRandomInt(10000);
 
-			var capturedImgName = "cam_img_"+pic_rand_id+".jpg";
+			capturedImgName = "cam_img_"+pic_rand_id+".jpg";
 			
 			//Capture New Image
 			captureNewImage(pic_rand_id, capturedImgName)
@@ -105,72 +105,63 @@
 		});
 
 		$("#sendPictureForVerification").click(function () {
-
-			if (process.platform == "win32") {
-
-				if (fs.existsSync(process.cwd() + "\\src\\cam_imgs\\"+capturedImgName)) {
-				  //Upload New Image
-				  uploadNewImage(process.cwd() + "\\src\\cam_imgs\\"+capturedImgName)
-				}else {
-					Swal.fire(
-					  'Error',
-					  'Please Take Your Photo First',
-					  'error'
-					)
-				}
-
-			}else {
 				
-				if (fs.existsSync(process.cwd() + "/src/cam_imgs/"+capturedImgName)) {
-				  //Upload New Image
-				  uploadNewImage(process.cwd() + "/src/cam_imgs/"+capturedImgName)
-				}else {
-					Swal.fire(
-					  'Error',
-					  'Please Take Your Photo First',
-					  'error'
-					)
-				}
-
+			if (fs.existsSync((process.cwd()).replaceAll("\\", "/") + "/src/cam_imgs/"+capturedImgName)) {
+			  //Upload New Image
+			  uploadNewImage((process.cwd()).replaceAll("\\", "/") + "/src/cam_imgs/"+capturedImgName)
+			}else {
+				Swal.fire(
+				  'Error',
+				  'Please Take Your Photo First',
+				  'error'
+				)
 			}
+
 			
 
 		});
 
-		function uploadNewImage(capturedImg) {
+		async function uploadNewImage(capturedImg) {
 
-			let formData = new FormData();
-			formData.append("client_unknown_face", fs.createReadStream(capturedImg));
+			capturedImg = capturedImg.replaceAll("\\", "/");
 
-			axios.post(apiServerUrl + "/api/v1/client/face/recognition/verification", formData,
-	                { 
-	                headers : {
-	                    'content-type': 'multipart/form-data',
-	                    clientId: localStorage.getItem('clientId'),
-	                    clientToken: localStorage.getItem('clientToken')
-	                }
+			var command_r = 'node src/post_image_face_verification.js '+'"'+capturedImg+'" ' 
+				+ localStorage.getItem('clientId') + " " + localStorage.getItem('clientToken');
 
-	            }).then(function (response) {
+			console.log(command_r)
 
-	            	const resData = response.data
+			upload_file_cmd = cmd.run(command_r, 
 
-	            	if (resData['status'] == true) {
-	            		Swal.fire({
-	            		  title: 'Success!',
-	            		  text: 'Face Accepted',
-	            		  icon: 'success'
-	            		}).then(function () {
-	            			// window.location.assign(next_page)
-	            		})
-	            	}else {
-	            		Swal.fire({
-	            		  title: 'Error!',
-	            		  text: 'Face Rejected. Please Take Another Shot',
-	            		  icon: 'error'
-	            		})
-	            	}
+				function (err, data, stderr) {
 
-	            })
+					let rawdata = fs.readFileSync('src/data_face_rec_data.json')
+					let jsonData = JSON.parse(rawdata)
+
+					if (jsonData['status'] == true) {
+
+	            		var scoreFactorIdsList = jsonData['scoreFactorIdsList']
+
+	            		//Next Page
+	            		var next_page = getGoNextPage(scoreFactorIdsList)
+
+            			Swal.fire({
+            			  title: 'Success!',
+            			  text: 'Face Recognition Verification Passed',
+            			  icon: 'success'
+            			}).then(function () {
+            				window.location.assign(next_page)
+            			})
+
+					}else {
+						Swal.fire({
+						  title: 'Error!',
+						  text: 'Face Recognition Verification Failed',
+						  icon: 'error'
+						})
+					}
+
+				})
+
 		}
 
 
@@ -182,24 +173,13 @@
 
 				$("#capturedImg").html("<span></span>");
 
-				if (process.platform == "win32") {
+				//Set Taken Shot
+				$("#capturedImg").html(`
+					
+					<img src="`+process.cwd() + "/src/cam_imgs/"+capturedImgName+`" 
+					style="height: 100%; width: 100%;">
 
-					//Set Taken Shot
-					$("#capturedImg").html(`
-						
-						<img src="`+ process.cwd() + "\\src\\cam_imgs\\"+capturedImgName+`" 
-						style="height: 100%; width: 100%;">
-
-						`);
-				}else {
-					//Set Taken Shot
-					$("#capturedImg").html(`
-						
-						<img src="`+process.cwd() + "/src/cam_imgs/"+capturedImgName+`" 
-						style="height: 100%; width: 100%;">
-
-						`);
-				}
+					`);
 
 			});
 		}

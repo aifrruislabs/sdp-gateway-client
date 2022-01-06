@@ -1,5 +1,5 @@
-var apiServerUrl = "http://127.0.0.1:8000"
-// var apiServerUrl = "http://sdpapi.aifrruislabs.com"
+// var apiServerUrl = "http://127.0.0.1:8000"
+var apiServerUrl = "https://sdpapi.aifrruislabs.com"
 
 var clientId = ""
 
