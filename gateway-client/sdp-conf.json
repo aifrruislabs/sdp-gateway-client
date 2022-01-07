@@ -4,6 +4,8 @@
 
 	"controller_ip": "https://sdpapi.aifrruislabs.com",
 
+	"gateway_ip": "167.172.53.125",
+
 	"gateway_id": "1", 
 
 	"gateway_user_id": "2", 

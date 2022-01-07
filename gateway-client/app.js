@@ -25,6 +25,7 @@ app.use(morgan('combined'))
 const rawData = fs.readFileSync('sdp-conf.json')
 const jsonData = JSON.parse(rawData);
 
+const gateway_ip = jsonData['gateway_ip']
 const controller_ip = jsonData['controller_ip']
 const controller_port = jsonData['controller_port']
 const gateway_access_token = jsonData['gateway_access_token']
@@ -70,5 +71,5 @@ app.post('/api/v1/create/update/gateway/stanza',  upload.none(), async (req, res
 })
 
 app.listen(port, () => {
-  console.log(`Gateway app listening at http://${controller_ip}:${port}`)
+  console.log(`Gateway app listening at http://${gateway_ip}:${port}`)
 })
