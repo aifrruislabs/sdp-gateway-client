@@ -84,6 +84,9 @@
 		//Pull Granted Services List
 		pullGrantedServicesList();
 
+		//Get Client Public IP
+		getAndSetDevicePublicIp();
+
 	})
 
 	//Function to Pull Granted Services
@@ -147,12 +150,8 @@
 		//If Network Accessibility is 0 -> Internal Network Then Take Device Internal IP
 		//If Network Accessibility is 1 -> External Network Then Take Device Public IP
 
-		//Get Client Public IP
-		getAndSetDevicePublicIp();
-
 		//Get Client Internal IP
 		clientInternalIp = ip.address()
-
 
 		if (gatewayNetworkAccessibility == "0") {
 			//Update Hmac and Encryption Keys
@@ -172,6 +171,7 @@
 	
 	}
 
+	//Get and Set Device Public Ip
 	function getAndSetDevicePublicIp() {
 		$.get('https://api.ipify.org?format=json', function (data) {
 
