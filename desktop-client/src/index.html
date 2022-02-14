@@ -130,6 +130,11 @@
 
 	            	const resData = response.data
 
+	            	//Store Gateway Network Accessibility Status
+	            	gatewayNetworkAccessibility = resData['gatewayNetworkAccessibility']
+
+	            	localStorage.setItem('gatewayNetworkAccessibility', gatewayNetworkAccessibility),
+
 	            	if (resData['status'] == true) {
 	            		Swal.fire({
 	            		  title: 'Success!',
@@ -211,6 +216,10 @@
 
 						//Get Client Gateway List
 						getGatewaysListForThisClient();
+
+						//Set Title to Gateway Setup
+						$(document).attr('title', 'Gateway Setup')
+						
 
 						//Detemine Next Page for Verification / Validation
 						if (scoreFactorIdsList != 0) {

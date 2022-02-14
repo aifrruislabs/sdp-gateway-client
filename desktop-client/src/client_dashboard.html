@@ -71,6 +71,7 @@
 </div>
 
 <script type="text/javascript">
+	var ip = require('ip')
 	var cmd = require('node-cmd');
 
 	$(document).ready(function () {
@@ -141,14 +142,52 @@
 		$("#backgroundActivities").html(`<code>Sending Request to 
 			Update Encryption and Hmac Keys <br/> at : `+datetime+`</code>`);
 
+		var gatewayNetworkAccessibility = localStorage.getItem('gatewayNetworkAccessibility')
+
+		//If Network Accessibility is 0 -> Internal Network Then Take Device Internal IP
+		//If Network Accessibility is 1 -> External Network Then Take Device Public IP
+
+		//Get Client Public IP
+		getAndSetDevicePublicIp();
+
+		//Get Client Internal IP
+		clientInternalIp = ip.address()
+
+
+		if (gatewayNetworkAccessibility == "0") {
+			//Update Hmac and Encryption Keys
+			updateHmacEncryKeys(clientPublicIp)	
+
+		}else if (gatewayNetworkAccessibility == "1") {
+			
+			if (clientPublicIp != "") {
+				//Update Hmac and Encryption Keys
+				updateHmacEncryKeys(clientPublicIp)	
+			}else {
+				//Get and Set Device Public Ip
+				getAndSetDevicePublicIp()
+			}
+		
+		}
+	
+	}
+
+	function getAndSetDevicePublicIp() {
 		$.get('https://api.ipify.org?format=json', function (data) {
 
 			var jsonData = JSON.parse(JSON.stringify(data));
 
 			clientPublicIp = jsonData['ip'];
 
+		});
+	}
+
+
+	//Update Hmac and Encryption Keys
+	function updateHmacEncryKeys(clientIp) {
+
 			axios.post(apiServerUrl + "/api/v1/client/generate/encryption/hmac/keys", {
-					client_public_ip: clientPublicIp
+					client_public_ip: clientIp
 					},
 
 		            { 
@@ -198,11 +237,9 @@
 		        	}
 
 		        })
-
-		});
-
-	
 	}
+
+
 
 	//Logout Clear Trust Score
 	function logout_clear_trust_score() 

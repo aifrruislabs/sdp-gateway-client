@@ -29,6 +29,7 @@
 		"axios": "^0.24.0",
 		"form-data": "^4.0.0",
 		"getmac": "^5.20.0",
+		"ip": "^1.1.5",
 		"node-cmd": "^5.0.0",
 		"node-getmac": "^1.0.3",
 		"offline-geo-from-ip": "^1.0.1"
