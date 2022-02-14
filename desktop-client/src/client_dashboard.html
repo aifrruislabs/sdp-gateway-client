@@ -155,13 +155,13 @@
 
 		if (gatewayNetworkAccessibility == "0") {
 			//Update Hmac and Encryption Keys
-			updateHmacEncryKeys(clientPublicIp)	
+			updateHmacEncryKeys(clientInternalIp, datetime)	
 
 		}else if (gatewayNetworkAccessibility == "1") {
 			
 			if (clientPublicIp != "") {
 				//Update Hmac and Encryption Keys
-				updateHmacEncryKeys(clientPublicIp)	
+				updateHmacEncryKeys(clientPublicIp, datetime)	
 			}else {
 				//Get and Set Device Public Ip
 				getAndSetDevicePublicIp()
@@ -184,7 +184,7 @@
 
 
 	//Update Hmac and Encryption Keys
-	function updateHmacEncryKeys(clientIp) {
+	function updateHmacEncryKeys(clientIp, datetime) {
 
 			axios.post(apiServerUrl + "/api/v1/client/generate/encryption/hmac/keys", {
 					client_public_ip: clientIp
