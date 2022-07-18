@@ -65,21 +65,24 @@ setInterval(function () {
 
     try {
       
-      axios.post(serverUri + "/post/gateway/network/traffic/tx", {
-
+      if (netRx != '' && netTx != '' && cpuPercent != '') {
+        axios.post(serverUri + "/post/gateway/network/traffic/tx", {
                'trafficRx': netRx,
                'trafficTx': netTx,
                'cpuPercent': cpuPercent
 
                }, { 
-                   headers : {
-                       'Content-Type': 'application/json',
-                       'userId': gateway_user_id,
-                       'gatewayId': gateway_id,
-                       'accessToken': gateway_access_token
-                  }
-
-              })
+                 headers : {
+                     'Content-Type': 'application/json',
+                     'userId': gateway_user_id,
+                     'gatewayId': gateway_id,
+                     'accessToken': gateway_access_token
+                }
+        })
+      }else {
+        console.log("Not Sending Request to API because of Data Miss")
+      }
+      
 
     }catch(error) {
       console.log(error)
