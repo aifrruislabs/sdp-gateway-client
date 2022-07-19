@@ -26,9 +26,40 @@ const rawData = fs.readFileSync('sdp-conf.json')
 const jsonData = JSON.parse(rawData);
 
 const gateway_ip = jsonData['gateway_ip']
+const gateway_iface = jsonData['gateway_iface']
 const controller_ip = jsonData['controller_ip']
 const controller_port = jsonData['controller_port']
 const gateway_access_token = jsonData['gateway_access_token']
+
+
+//Turn on Gateway Default Policy
+app.post('/api/v1/down/default/drop/firewall/policy', upload.none(), async (req, res) => {
+
+	var { gatewayAccessToken, serviceProto, servicePort } = req.body
+
+	if (gateway_access_token == gatewayAccessToken) {
+
+		cmd.runSync("iptables -I INPUT 1 -i "+gateway_iface+" -p "+serviceProto+" --dport "+servicePort+" -j ACCEPT")
+		cmd.runSync("iptables -I INPUT 1 -i "+gateway_iface+" -p "+serviceProto+" --dport "+servicePort+" -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT")
+		
+	}
+
+})
+
+
+//Turn on Gateway Default Policy
+app.post('/api/v1/up/default/drop/firewall/policy', upload.none(), async (req, res) => {
+
+	var { gatewayAccessToken, serviceProto, servicePort } = req.body
+
+	if (gateway_access_token == gatewayAccessToken) {
+
+		cmd.runSync("iptables -I INPUT 1 -i "+gateway_iface+" -p "+serviceProto+" --dport "+servicePort+" -j DROP")
+		cmd.runSync("iptables -I INPUT 1 -i "+gateway_iface+" -p "+serviceProto+" --dport "+servicePort+" -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT")
+
+	}
+
+})
 
 //Create Update Gateway Stanza
 app.post('/api/v1/create/update/gateway/stanza',  upload.none(), async (req, res) => {

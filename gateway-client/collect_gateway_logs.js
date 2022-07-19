@@ -65,7 +65,7 @@ setInterval(function () {
 
     try {
       
-      if (netRx != '' && netTx != '' && cpuPercent != '') {
+      if (netRx !== '' && netTx !== '' && cpuPercent !== '') {
         axios.post(serverUri + "/post/gateway/network/traffic/tx", {
                'trafficRx': netRx,
                'trafficTx': netTx,
