@@ -44,6 +44,10 @@ app.post('/api/v1/down/default/drop/firewall/policy', upload.none(), async (req,
 		
 	}
 
+	res.status(200).json({
+		'status': true
+	})
+
 })
 
 
@@ -58,6 +62,10 @@ app.post('/api/v1/up/default/drop/firewall/policy', upload.none(), async (req, r
 		cmd.runSync("iptables -I INPUT 1 -i "+gateway_iface+" -p "+serviceProto+" --dport "+servicePort+" -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT")
 
 	}
+
+	res.status(200).json({
+		'status': true
+	})
 
 })
 
