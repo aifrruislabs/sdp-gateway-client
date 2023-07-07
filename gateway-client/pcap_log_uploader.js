@@ -78,7 +78,7 @@ async function uploadFolderContents(folderPath, timePeriod) {
             
             for (var file of files) {
 
-                var resD = await uploadFile(folderPath + file, file);
+                var resD = await uploadFile(folderPath + "/" + file, file);
 
                 var resData = resD.data
 
