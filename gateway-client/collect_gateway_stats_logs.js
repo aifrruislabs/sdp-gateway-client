@@ -5,7 +5,7 @@ var cpuStat = require('cpu-stat')
 
 //Pull Configuration Data
 const rawData = fs.readFileSync('sdp-conf.json')
-const jsonData = JSON.parse(rawData);
+const jsonData = JSON.parse(rawData)
 
 const controller_uri = jsonData['controller_uri']
 
