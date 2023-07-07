@@ -1,3 +1,11 @@
+//	Aifrruis Labs Software Defined Perimeter Gateway Application
+//
+//	This python code was written by
+//	1. Elijah Masanga
+//	2. Francis Ruambo
+//
+//	Date : 7th July 2023
+
 const fs = require('fs')
 const axios = require('axios')
 const cmd = require('node-cmd')
@@ -19,32 +27,38 @@ const pcapFolder = '/home/gateway_pcap_log';
 
 // Start Data Log Process
 async function startDataLogProcess(pcapFolder, loggingPeriod) {
-    const filename = new Date().toISOString();
             
     while (1) {
 
-        const pcapFileName = pcapFolder + '/' + filename + '.pcap';
+        var filename = new Date().toISOString();
+
+        var pcapFileName = pcapFolder + '/' + filename + '.pcap';
 
         console.log("Starting Collection : " + pcapFileName)
 
-        cmd.runSync("tcpdump -i " + gateway_iface + " -w " + pcapFileName + " -G " + loggingPeriod + " -W 1")
+        var loggingPeriodInt = parseInt(loggingPeriod);
 
-        await sleep(2000);
+        //tcpdump -i eth0 -w "/home/alpha/alpha.pcap" -G 5 -W 1
+
+        cmd.runSync("tcpdump -i " + gateway_iface + " -w " + pcapFileName + " -G " + loggingPeriodInt + " -W 1")
+
+        await sleep((loggingPeriodInt * 1000) - 100);
     }
 }
 
 
 fs.access(pcapFolder, fs.constants.F_OK, (err) => {
-  if (err) {
-    //Creating New Folder for Storing Pcap Logs
-    fs.mkdir(pcapFolder, { recursive: true }, (err) => {
-        if (err) {
-          console.error(err);
-        } else {
-          console.log('Folder created successfully');
-        }
-      });
-  } else {
+    if (err) {
+        //Creating New Folder for Storing Pcap Logs
+        fs.mkdir(pcapFolder, { recursive: true }, (err) => {
+            if (err) {
+            console.error(err);
+            } else {
+            console.log('Folder created successfully');
+            }
+        });
+    }
+
     //Check If We Collect Logs and Which Period We are Using
     // Set headers
     const isLoggingheaders = {
@@ -53,12 +67,12 @@ fs.access(pcapFolder, fs.constants.F_OK, (err) => {
         'gatewayId': gateway_id,
         'accessToken': gateway_access_token
     };
-    
+
     // Set query parameters
     const isLoggingparams = {
         'gatewayId': gateway_id
     };
-    
+
     axios.get(serverUri + "/does/gateway/collect/logs", { isLoggingheaders, isLoggingparams })
     .then(response => {
         // Handle successful response
@@ -80,5 +94,4 @@ fs.access(pcapFolder, fs.constants.F_OK, (err) => {
         console.error(error);
     });
 
-  }
 });
