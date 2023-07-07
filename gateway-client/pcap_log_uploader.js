@@ -23,6 +23,12 @@ const gateway_access_token = jsonData['gateway_access_token']
 const serverUri = controller_uri + "/api/v1"
 
 
+// Sleep Function
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+
 // Function to read files from a folder
 function readFolder(folderPath) {
   return new Promise((resolve, reject) => {
@@ -67,7 +73,9 @@ async function uploadFolderContents(folderPath, timePeriod) {
             var files = await readFolder(folderPath);
             
             for (const file of files) {
-                const resData = await uploadFile(`${folderPath}/${file}`).data;
+                var resD = await uploadFile(`${folderPath}/${file}`);
+
+                var resData = resD.data
 
                 if (resData['status'] == true) {
                     console.log("File " + file + " was Uploaded successfully");
