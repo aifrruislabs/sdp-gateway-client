@@ -25,6 +25,11 @@ const serverUri = controller_uri + "/api/v1"
 
 const pcapFolder = '/home/gateway_pcap_log'
 
+// Sleep Function
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 // Start Data Log Process
 async function startDataLogProcess(pcapFolder, loggingPeriod) {
             
