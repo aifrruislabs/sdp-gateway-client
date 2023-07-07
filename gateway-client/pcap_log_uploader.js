@@ -43,14 +43,18 @@ function readFolder(folderPath) {
 }
 
 // Function to upload a file to the API
-function uploadFile(file) {
+function uploadFile(filePath, fileName) {
+  
+  console.log("File Path : " + filePath);
+  console.log("File Name : " + fileName);
+
   const apiUrl = serverUri + "/upload/log/collection/gateway";
   
   //Form Data
   const formData = new FormData();
   formData.append('gatewayId', gateway_id);
-  formData.append('gatewayPcapTime', file);
-  formData.append('gatewayPcapLog', fs.createReadStream(file));
+  formData.append('gatewayPcapTime', fileName);
+  formData.append('gatewayPcapLog', fs.createReadStream(filePath));
 
   return axios.post(apiUrl, formData, {
     //Headers
@@ -72,8 +76,9 @@ async function uploadFolderContents(folderPath, timePeriod) {
         try {
             var files = await readFolder(folderPath);
             
-            for (const file of files) {
-                var resD = await uploadFile(`${folderPath}/${file}`);
+            for (var file of files) {
+
+                var resD = await uploadFile(folderPath + file, file);
 
                 var resData = resD.data
 
