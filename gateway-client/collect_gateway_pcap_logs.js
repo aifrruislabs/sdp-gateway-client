@@ -12,7 +12,7 @@ const cmd = require('node-cmd')
 
 //Pull Configuration Data
 const rawData = fs.readFileSync('sdp-conf.json')
-const jsonData = JSON.parse(rawData);
+const jsonData = JSON.parse(rawData)
 
 const controller_uri = jsonData['controller_uri']
 
@@ -23,7 +23,7 @@ const gateway_access_token = jsonData['gateway_access_token']
 
 const serverUri = controller_uri + "/api/v1"
 
-const pcapFolder = '/home/gateway_pcap_log';
+const pcapFolder = '/home/gateway_pcap_log'
 
 // Start Data Log Process
 async function startDataLogProcess(pcapFolder, loggingPeriod) {
@@ -61,19 +61,22 @@ fs.access(pcapFolder, fs.constants.F_OK, (err) => {
 
     //Check If We Collect Logs and Which Period We are Using
     // Set headers
-    const isLoggingheaders = {
+    var isLoggingHeaders = {
         'Content-Type': 'application/json',
         'userId': gateway_user_id,
         'gatewayId': gateway_id,
         'accessToken': gateway_access_token
-    };
+    }
 
     // Set query parameters
-    const isLoggingparams = {
+    var isLoggingParams = {
         'gatewayId': gateway_id
-    };
+    }
 
-    axios.get(serverUri + "/does/gateway/collect/logs", { isLoggingheaders, isLoggingparams })
+    axios.get(serverUri + "/does/gateway/collect/logs", { 
+            headers: isLoggingHeaders, 
+            params: isLoggingParams 
+    })
     .then(response => {
         // Handle successful response
         var resData = response.data;
