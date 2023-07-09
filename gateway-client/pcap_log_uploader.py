@@ -93,8 +93,10 @@ def upload_folder_contents(folder_path, time_period):
                 'accessToken': gateway_access_token
           })
         
-        print ("Pcap Upload Status : " + str(response.status_code))
+        if (response.status_code == 201):
+            os.system("rm -rf " + str(pcap_file_path))
 
+        print ("Pcap Upload Status : " + str(response.status_code))
 
 # Start Processing PCAP Files
 start_processing_files(gateway_user_id, gateway_id, gateway_access_token)
