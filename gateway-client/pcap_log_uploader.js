@@ -56,7 +56,9 @@ function uploadFile(filePath, fileName) {
   const formData = new FormData();
   formData.append('gatewayId', gateway_id)
   formData.append('gatewayPcapTime', fileName)
-  formData.append('file', gatewayPcapLog, 'gatewayPcapLog')
+  formData.append('file', gatewayPcapLog, {
+    filename: 'gatewayPcapLog'
+  })
 
   return axios.post(apiUrl, formData, {
     //Headers
