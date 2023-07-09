@@ -74,18 +74,18 @@ def upload_folder_contents(folder_path, time_period):
         print("File Name : " + str(pcap_file_name) + "\n\n")
         print("File Path : " + str(pcap_file_path) + "\n\n")
 
-        gateway_pcap_log = open(pcap_file_path, 'rb')
-
-        # Form data
-        post_form_data = {
-            'gatewayId': gateway_id,
-            'gatewayPcapTime': pcap_file_name,
-            'gatewayPcapLog': gateway_pcap_log,
-        }
-
         response = requests.post(
             api_url,
-            post_form_data,
+            
+            params = {
+                'gatewayId': gateway_id,
+                'gatewayPcapTime': pcap_file_name,
+            },
+
+            files = {
+                'file': open(pcap_file_path, 'rb')
+            },
+
             headers = {
                 'Content-Type': 'multipart/form-data',
                 'userId': gateway_user_id,
