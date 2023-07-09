@@ -67,36 +67,40 @@ def start_processing_files(gateway_user_id, gateway_id, gateway_access_token):
 def upload_folder_contents(folder_path, time_period):
     api_url = serverUri + "/upload/log/collection/gateway"
 
-    for pcap_file in os.listdir(folder_path):
-        pcap_file_name = pcap_file
-        pcap_file_path = os.path.join(folder_path, pcap_file)
+    while True:
+      for pcap_file in os.listdir(folder_path):
+          pcap_file_name = pcap_file
+          pcap_file_path = os.path.join(folder_path, pcap_file)
 
-        print("File Name : " + str(pcap_file_name) + "\n\n")
-        print("File Path : " + str(pcap_file_path) + "\n\n")
+          print("File Name : " + str(pcap_file_name) + "\n\n")
+          print("File Path : " + str(pcap_file_path) + "\n\n")
 
-        response = requests.post(
-            api_url,
-            
-            params = {
-                'gatewayId': gateway_id,
-                'gatewayPcapTime': pcap_file_name,
-            },
+          response = requests.post(
+              api_url,
+              
+              params = {
+                  'gatewayId': gateway_id,
+                  'gatewayPcapTime': pcap_file_name,
+              },
 
-            files = {
-                'file': open(pcap_file_path, 'rb')
-            },
+              files = {
+                  'file': open(pcap_file_path, 'rb')
+              },
 
-            headers = {
-                'Content-Type': 'multipart/form-data',
-                'userId': gateway_user_id,
-                'gatewayId': gateway_id,
-                'accessToken': gateway_access_token
-          })
-        
-        if (response.status_code == 201):
-            os.system("rm -rf " + str(pcap_file_path))
+              headers = {
+                  'Content-Type': 'multipart/form-data',
+                  'userId': gateway_user_id,
+                  'gatewayId': gateway_id,
+                  'accessToken': gateway_access_token
+            })
+          
+          if (response.status_code == 201):
+              os.system("rm -rf " + str(pcap_file_path))
 
-        print ("Pcap Upload Status : " + str(response.status_code))
+          print ("Pcap Upload Status : " + str(response.status_code))
+
+      # Sleep to wait for new PCAPS
+      sleep(time_period)
 
 # Start Processing PCAP Files
 start_processing_files(gateway_user_id, gateway_id, gateway_access_token)
