@@ -59,11 +59,11 @@ def start_processing_files(gateway_user_id, gateway_id, gateway_access_token):
             upload_folder_contents(folder_path, time_period)
 
     else:
-        print("Error: " + response.status_code)
+        print("Error: " + str(response.status_code))
 
 
 
-
+# Upload Folder Contents
 def upload_folder_contents(folder_path, time_period):
     api_url = serverUri + "/upload/log/collection/gateway"
 
@@ -80,7 +80,7 @@ def upload_folder_contents(folder_path, time_period):
         post_form_data = {
             'gatewayId': gateway_id,
             'gatewayPcapTime': pcap_file_name,
-            'gateway_pcap_log': gateway_pcap_log,
+            'gatewayPcapLog': gateway_pcap_log,
         }
 
         response = requests.post(
