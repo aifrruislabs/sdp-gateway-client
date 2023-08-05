@@ -1,3 +1,4 @@
 node_modules/*
 package-lock.json
 sdp-conf.json
+alert.txt
