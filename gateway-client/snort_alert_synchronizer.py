@@ -93,3 +93,4 @@ def  upload_chunk_to_sdp_controller(log_chunk):
     })
     
     print("Chunk Upload Status : " + str(response.status_code))
+    exit()
