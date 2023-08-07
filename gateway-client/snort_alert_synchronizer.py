@@ -66,6 +66,9 @@ while True:
             # Process This Chunk
             log_chunk = log_lines[int(alert_cache_start):int(alert_cache_end)]
 
+            # Upload Chunk to SDP Controller
+            upload_chunk_to_sdp_controller(log_chunk)
+
             print(log_chunk)
             print ("\n\n")
             
@@ -93,4 +96,3 @@ def  upload_chunk_to_sdp_controller(log_chunk):
     })
     
     print("Chunk Upload Status : " + str(response.status_code))
-    exit()
