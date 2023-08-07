@@ -49,7 +49,7 @@ def  upload_chunk_to_sdp_controller(log_chunk):
             'accessToken': gateway_access_token
     })
     
-    print("Chunk Upload Status : " + str(response.status_code))
+    print("Chunk Upload Status : " + str(chunk_upload_req.status_code))
 
 
 while True:
