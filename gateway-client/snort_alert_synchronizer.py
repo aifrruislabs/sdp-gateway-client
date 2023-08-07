@@ -43,7 +43,7 @@ def  upload_chunk_to_sdp_controller(log_chunk):
         },
 
         headers = {
-            'Content-Type': 'multipart/form-data',
+            'Content-Type': 'application/json',
             'userId': gateway_user_id,
             'gatewayId': gateway_id,
             'accessToken': gateway_access_token
