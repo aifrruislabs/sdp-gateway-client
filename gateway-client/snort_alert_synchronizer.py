@@ -38,7 +38,7 @@ def  upload_chunk_to_sdp_controller(log_chunk):
     chunk_upload_req = requests.post(
         serverUri + "/upload/gateway/snort/alert",
         
-        params = {
+        data = {
             'log_chunk': log_chunk,
         },
 
