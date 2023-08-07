@@ -35,20 +35,18 @@ serverUri = controller_uri + "/api/v1"
 
 # Upload Snort Alert Chunk to SDP Controller
 def  upload_chunk_to_sdp_controller(log_chunk):
-    chunk_upload_req = requests.post(
-        serverUri + "/upload/gateway/snort/alert",
-        
-        data = {
-            'log_chunk': log_chunk,
-        },
+    data = { "log_chunk": log_chunk }
 
-        headers = {
-            'Content-Type': 'application/json',
-            'userId': gateway_user_id,
-            'gatewayId': gateway_id,
-            'accessToken': gateway_access_token
-    })
+    headers = {
+            "Content-Type": "application/json",
+            "userId": gateway_user_id,
+            "gatewayId": gateway_id,
+            "accessToken": gateway_access_token 
+    }
     
+    post_url = serverUri + "/upload/gateway/snort/alert"
+    chunk_upload_req = requests.post(post_url, json=data, headers=headers)
+
     print("Chunk Upload Status : " + str(chunk_upload_req.status_code))
 
 
