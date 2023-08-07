@@ -33,6 +33,24 @@ gateway_access_token = json_data['gateway_access_token']
 
 serverUri = controller_uri + "/api/v1"
 
+# Upload Snort Alert Chunk to SDP Controller
+def  upload_chunk_to_sdp_controller(log_chunk):
+    chunk_upload_req = requests.post(
+        serverUri + "/upload/gateway/snort/alert",
+        
+        params = {
+            'log_chunk': log_chunk,
+        },
+
+        headers = {
+            'Content-Type': 'multipart/form-data',
+            'userId': gateway_user_id,
+            'gatewayId': gateway_id,
+            'accessToken': gateway_access_token
+    })
+    
+    print("Chunk Upload Status : " + str(response.status_code))
+
 
 while True:
     # Clear SDP Alert Placeholder
@@ -78,21 +96,3 @@ while True:
     # Another batch
     print ("Waiting for Next Batch of Alerts")
     sleep(30)
-
-# Upload Snort Alert Chunk to SDP Controller
-def  upload_chunk_to_sdp_controller(log_chunk):
-    chunk_upload_req = requests.post(
-        serverUri + "/upload/gateway/snort/alert",
-        
-        params = {
-            'log_chunk': log_chunk,
-        },
-
-        headers = {
-            'Content-Type': 'multipart/form-data',
-            'userId': gateway_user_id,
-            'gatewayId': gateway_id,
-            'accessToken': gateway_access_token
-    })
-    
-    print("Chunk Upload Status : " + str(response.status_code))
