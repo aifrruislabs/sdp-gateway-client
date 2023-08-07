@@ -1,0 +1,4 @@
+node_modules/*
+gateway-client/package-lock.json
+gateway-client/sdp-conf.json
+gateway-client/alert.txt

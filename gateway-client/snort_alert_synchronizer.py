@@ -16,7 +16,7 @@ from time import sleep
 #log_file = "tosuffer_alerts.txt"
 #log_sdp_file = "alert.sdp.txt"
 
-log_dir = "/var/log/snort/alert"
+log_file = "/var/log/snort/alert"
 log_sdp_file = "/var/log/snort/alert_sdp"
 
 json_data = []
@@ -93,4 +93,3 @@ def  upload_chunk_to_sdp_controller(log_chunk):
     })
     
     print("Chunk Upload Status : " + str(response.status_code))
-    
