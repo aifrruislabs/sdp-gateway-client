@@ -19,6 +19,21 @@ from time import sleep
 log_dir = "/var/log/snort/alert"
 log_sdp_file = "/var/log/snort/alert_sdp"
 
+json_data = []
+
+# Pull configuration data
+with open('sdp-conf.json', 'r') as f:
+    json_data = json.load(f)
+
+controller_uri = json_data['controller_uri']
+gateway_iface = json_data['gateway_iface']
+gateway_id = json_data['gateway_id']
+gateway_user_id = json_data['gateway_user_id']
+gateway_access_token = json_data['gateway_access_token']
+
+serverUri = controller_uri + "/api/v1"
+
+
 while True:
     # Clear SDP Alert Placeholder
     os.system("rm -rf " + str(log_sdp_file))
@@ -63,4 +78,19 @@ while True:
 
 # Upload Snort Alert Chunk to SDP Controller
 def  upload_chunk_to_sdp_controller(log_chunk):
-    return true
+    chunk_upload_req = requests.post(
+        serverUri + "/upload/gateway/snort/alert",
+        
+        params = {
+            'log_chunk': log_chunk,
+        },
+
+        headers = {
+            'Content-Type': 'multipart/form-data',
+            'userId': gateway_user_id,
+            'gatewayId': gateway_id,
+            'accessToken': gateway_access_token
+    })
+    
+    print("Chunk Upload Status : " + str(response.status_code))
+    
