@@ -4,7 +4,7 @@
   "description": "Gateway Client Application written in Node JS",
   "main": "app.js",
   "scripts": {
-    "start": "concurrently \"nodemon app.js\" \"node collect_gateway_stats_logs.js\" \"node collect_gateway_pcap_logs.js\" \"snort -c /etc/snort/snort.conf -q -A full\" \"python3 snort_alert_synchronizer.py\" ",
+    "start": "concurrently \"nodemon app.js\" \"node collect_gateway_stats_logs.js\" \"snort -c /etc/snort/snort.conf -q -A full\" \"python3 snort_alert_synchronizer.py\" ",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Elijah Masanga, Francis Ruambo",
