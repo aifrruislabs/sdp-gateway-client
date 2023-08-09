@@ -16,22 +16,38 @@ from time import sleep
 #log_file = "tosuffer_alerts.txt"
 #log_sdp_file = "alert.sdp.txt"
 
-log_file = "/var/log/snort/alert"
-log_sdp_file = "/var/log/snort/alert_sdp"
+# log_file = "alert.txt"
+# log_track = "alert_tracker.json"
 
-json_data = []
+log_file = "/var/log/snort/alert"
+log_track = "/var/log/snort/alert_tracker.json"
+
+json_sdp_conf_data = []
+json_tracker_data = []
+last_track_line_number = 0
 
 # Pull configuration data
-with open('sdp-conf.json', 'r') as f:
-    json_data = json.load(f)
+sdp_conf_json = open("sdp-conf.json", "r")
+json_sdp_conf_data = json.load(sdp_conf_json)
 
-controller_uri = json_data['controller_uri']
-gateway_iface = json_data['gateway_iface']
-gateway_id = json_data['gateway_id']
-gateway_user_id = json_data['gateway_user_id']
-gateway_access_token = json_data['gateway_access_token']
+controller_uri = json_sdp_conf_data["controller_uri"]
+gateway_iface = json_sdp_conf_data["gateway_iface"]
+gateway_id = json_sdp_conf_data["gateway_id"]
+gateway_user_id = json_sdp_conf_data["gateway_user_id"]
+gateway_access_token = json_sdp_conf_data["gateway_access_token"]
 
 serverUri = controller_uri + "/api/v1"
+
+# Update File Tracker
+def update_file_tracker(new_line_track):
+    file_data_tracker = open(log_track, "r")
+    data = json.load(file_data_tracker)
+
+    data["line_number"] = new_line_track
+
+    with open(log_track, "w") as f:
+        json.dump(data, f)
+
 
 # Upload Snort Alert Chunk to SDP Controller
 def  upload_chunk_to_sdp_controller(log_chunk):
@@ -51,46 +67,51 @@ def  upload_chunk_to_sdp_controller(log_chunk):
 
 
 while True:
-    # Clear SDP Alert Placeholder
-    os.system("rm -rf " + str(log_sdp_file))
+    # Pull Alert Tracker data
+    log_track_json = open(log_track, "r")
+    json_tracker_data = json.load(log_track_json)
 
-    # Copy Current Alert Data
-    os.system("cp " + str(log_file) + " " + str(log_sdp_file))
-
-    # Delete Snort Alerts
-    os.system("rm -rf " + str(log_file))
-
-    # Create New With No Info Snort Alert File
-    os.system("touch " + str(log_file))
+    last_track_line_number = json_tracker_data["line_number"]
 
     # Open SDP Alert Placeholder file
-    stream_log_file = open(log_sdp_file, "r")
+    stream_log_file = open(log_file, "r")
     log_lines = stream_log_file.readlines()
+    total_len_lines = len(log_lines)
 
     line_count = 1
     alert_cache_start = 0 
     alert_cache_end = 0
 
-    for line in log_lines:
-        
-        if line.startswith("[**]"):
-            alert_cache_start = (line_count - 1)
+    if total_len_lines > line_count:
+        print ("New Lines Have Been Added to alert File")
+
+        for line in log_lines:
             
-        if len(line) == 1:
-            alert_cache_end = line_count
+            if line_count >= last_track_line_number:
+                if line.startswith("[**]"):
+                    alert_cache_start = (line_count - 1)
+                    
+                if len(line) == 1:
+                    alert_cache_end = line_count
 
-            # Process This Chunk
-            log_chunk = log_lines[int(alert_cache_start):int(alert_cache_end)]
+                    # Process This Chunk
+                    log_chunk = log_lines[int(alert_cache_start):int(alert_cache_end)]
 
-            # Upload Chunk to SDP Controller
-            upload_chunk_to_sdp_controller(log_chunk)
+                    # Upload Chunk to SDP Controller
+                    upload_chunk_to_sdp_controller(log_chunk)
 
-            print(log_chunk)
-            print ("\n\n")
-            
-        line_count += 1
+                    print(log_chunk)
+                    print ("\n\n")
+                
+            line_count += 1
 
-    # Wait for 30 seconds before sending 
-    # Another batch
-    print ("Waiting for Next Batch of Alerts")
-    sleep(30)
+        # Mark Last Line in Tracker
+        update_file_tracker(line_count)
+
+        # Wait for 30 seconds before sending 
+        # Another batch
+        print ("Waiting for Next Batch of Alerts")
+        sleep(30)
+    else:
+        print ("No New Lines Have Been Added to Snort Alert File")
+        sleep(30)

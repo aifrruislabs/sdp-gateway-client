@@ -4,14 +4,14 @@
 
 	"controller_ip": "https://sdpapi.aifrruislabs.com",
 
-	"gateway_ip": "167.172.53.125",
+	"gateway_ip": "164.90.183.223",
 
-	"gateway_id": "1", 
+	"gateway_id": "2", 
 
 	"gateway_user_id": "2", 
 
 	"gateway_iface": "eth0", 
 
-	"gateway_access_token": "5da308e050f84941e033c82df536fea69b2273f9" 
+	"gateway_access_token": "1bb11bb0fef2e8c86b3ffefdd69c0df5d15fb0c7" 
 
 }
