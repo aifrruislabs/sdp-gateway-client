@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>SDP Client Dashboard</title>
+
+	<!-- Application CSS -->
+	<link rel="stylesheet" type="text/css" href="styles/app.css">
+
+	<!-- JQuery -->
+	<script type="text/javascript" src="styles/jquery.min.js"></script>
+
+	<!-- Font Awesome 4.7 -->
+	<link rel="stylesheet" type="text/css" 
+		href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css">
+
+	<!-- Application JS -->
+	<script type="text/javascript" src="styles/app.js"></script>
+
+	<!-- bootstrap JS -->
+	<script type="text/javascript" src="styles/bts/js/bootstrap.min.js"></script>
+
+	<!-- Bootstrap CSS -->
+	<link rel="stylesheet" type="text/css" href="styles/bts/css/bootstrap.min.css">
+
+	<!-- Sweet Alert -->
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+	<!-- Axios -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.24.0/axios.min.js" integrity="sha512-u9akINsQsAkG9xjc1cnGF4zw5TFDwkxuc9vUp5dltDWYCSmyd0meygbvgXrlc/z7/o4a19Fb5V0OUE58J7dcyw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+</head>
+<body class="container-fluid">
+
+
+<div style="margin-left: 0.5%; margin-right: 0.5%;">
+	<div style="float: left;">
+		<h4>My Incidents List</h4>	
+	</div>
+
+	<div style="float: right;">
+		<h4>Trust Score: <span id="trustScore"></span></h4>
+	</div>
+</div>
+<br/><br/>
+<hr/>
+
+<table class="table table-bordered">
+	<tr>
+		<td>ID</td>
+		<td>Incident Title</td>
+		<td>Incident Response</td>
+		<td>Resolved</td>
+	</tr>
+
+	<tbody id="incidentsList"></tbody>
+</table>
+
+
+
+<script type="text/javascript">
+	
+//Pull My Incidents List
+function pullMyIncidentsList() {
+	axios.get(apiServerUrl + "/api/v1/client/pull/icd/events",
+            { 
+            headers : {
+                'Content-Type': 'application/json',
+                clientId: localStorage.getItem('clientId'),
+                clientToken: localStorage.getItem('clientToken')
+            }
+
+        }).then(function (response) {
+
+        	const resData = response.data
+
+        	const data = resData.data
+
+        	var id = 1;
+
+        	$("#trustScore").html(resData['clientTrustScore'] + " %");
+
+        	data.forEach(function (incident) {
+
+        		$("#incidentsList").append(`
+
+        			<tr>
+        				<td>`+id+`</td>
+        				<td>`+incident.incidentTitle+`</td>
+        				<td>`+incident.incidentResponse+`</td>
+        				<td>`+incident.incidentResolved+`</td>
+        			</tr>
+
+        			`);
+
+        		id += 1
+
+        	})
+
+        })
+}
+
+
+//Pull My Incidents List
+pullMyIncidentsList();
+
+</script>
+
+</body>
+
+</html>

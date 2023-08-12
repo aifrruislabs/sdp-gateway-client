@@ -71,7 +71,7 @@
 </div>
 
 <script type="text/javascript">
-	var ip = require('ip')
+	var ip = require('ip');
 	var cmd = require('node-cmd');
 
 	$(document).ready(function () {
@@ -234,6 +234,11 @@
 
 		        		$("#backgroundActivities").html(`<code>Encryption Key and Hmac Key 
 		        			<br/>Updated Successfully on Gateway : `+spaServer+` <br/> at : `+datetime+`</code>`);	
+		        	}else (jsonData['status'] == false) {
+		        		var falseStatus = jsonData['falseStatus']
+		        		var currentScore = jsonData['currentScore']
+
+		        		window.location.assign("incident_records.html")
 		        	}
 
 		        })
