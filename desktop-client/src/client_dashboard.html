@@ -255,7 +255,7 @@
 
 		        		$("#backgroundActivities").html(`<code>Encryption Key and Hmac Key 
 		        			<br/>Updated Successfully on Gateway : `+spaServer+` <br/> at : `+datetime+`</code>`);	
-		        	}else (jsonData['status'] == false) {
+		        	}else if (jsonData['status'] == false) {
 		        		var falseStatus = jsonData['falseStatus']
 		        		var currentScore = jsonData['currentScore']
 
