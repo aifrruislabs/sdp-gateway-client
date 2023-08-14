@@ -96,20 +96,19 @@ function getClientPublicIp() {
 
 		clientPublicIp = jsonData['ip'];
 
-		
 		//Update Client Public IP
 		axios.post(apiServerUrl + "/api/v1/update/client/public/ip", {
-					'clientPublicIp': clientPublicIp
-				},
+				'clientPublicIp': clientPublicIp
+			},
 
-                { 
-                headers : {
-                    'Content-Type': 'application/json',
-                    clientId: localStorage.getItem('clientId'),
-                    clientToken: localStorage.getItem('clientToken')
-                }
+			{ 
+			headers : {
+				'Content-Type': 'application/json',
+				clientId: localStorage.getItem('clientId'),
+				clientToken: localStorage.getItem('clientToken')
+			}
 
-            })
+		})
 
 	});
 }
