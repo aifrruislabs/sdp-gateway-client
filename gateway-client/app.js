@@ -94,7 +94,7 @@ app.post('/api/v1/create/update/gateway/stanza',  upload.none(), async (req, res
 		cmd.runSync("fwknopd -K") 		
 
 		//If Did not Started Start Now
-		cmd.runSync("fwknopd") 		
+		cmd.runSync("fwknopd -i " + gateway_iface) 		
 
 		res.status(201).json({
 			'status': true
